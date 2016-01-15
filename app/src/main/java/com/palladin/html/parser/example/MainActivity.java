@@ -7,7 +7,7 @@
  *
  * */
 
-package comgomsang.httpsgithub.dbhsparser;
+package com.palladin.html.parser.example;
 
 import android.app.ProgressDialog;
 import android.content.Context;
