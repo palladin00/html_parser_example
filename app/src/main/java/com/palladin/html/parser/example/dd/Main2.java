@@ -1,4 +1,4 @@
-package com.palladin.html.parser.example;
+package com.palladin.html.parser.example.dd;
 
 import android.app.ProgressDialog;
 import android.content.Context;
@@ -32,6 +32,7 @@ import java.io.InputStreamReader;
 import java.net.URL;
 import java.util.ArrayList;
 import java.util.List;
+import com.palladin.html.parser.example.*;
 
 public class Main2 extends ActionBarActivity {
 

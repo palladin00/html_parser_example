@@ -32,6 +32,7 @@ import java.io.InputStreamReader;
 import java.net.URL;
 import java.util.ArrayList;
 import java.util.List;
+import com.palladin.html.parser.example.dd.*;
 
 public class MainActivity extends ActionBarActivity {
 
