@@ -12,6 +12,7 @@
         android:paddingLeft="8dp"
         android:paddingRight="8dp"
         android:paddingTop="4dp"
+		android:id="@+id/card_view1"
         android:paddingBottom="4dp">
 
 
@@ -79,6 +80,8 @@
     <RelativeLayout
         android:layout_width="fill_parent"
         android:layout_height="wrap_content"
+		android:id="@+id/card_view2"
+		android:layout_below="@+id/card_view1"
         android:layout_centerVertical="true"
         android:layout_centerHorizontal="true"
         android:paddingLeft="8dp"
@@ -136,6 +139,8 @@
         android:layout_height="wrap_content"
         android:layout_centerVertical="true"
         android:layout_centerHorizontal="true"
+		android:id="@+id/card_view3"
+		android:layout_below="@+id/card_view2"
         android:paddingLeft="8dp"
         android:paddingRight="8dp"
         android:paddingTop="4dp"

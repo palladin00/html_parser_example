@@ -79,7 +79,7 @@ public class MainActivity extends ActionBarActivity {
 
                         ListData mData = mListData.get(position); // 클릭한 포지션의 데이터를 가져온다.
                         String URL_BCS = mData.mUrl; //가져온 데이터 중 url 부분만 적출해낸다.
-						Intent inten2t = new Intent(getApplicationContext(),Main2.class);
+						Intent inten2t = new Intent(MainActivity.this,Main2.class);
 						inten2t.putExtra("url", URL_BCS);
 						startActivity(inten2t); 
 						
@@ -87,7 +87,7 @@ public class MainActivity extends ActionBarActivity {
                     }
                 });
 
-
+		url=URL_PRIMARY+GETNOTICE;
     if(isInternetCon()) { //false 반환시 if 문안의 로직 실행
             Toast.makeText(MainActivity.this, "인터넷에 연결되지않아 불러오기를 중단합니다.", Toast.LENGTH_SHORT).show();
             finish();

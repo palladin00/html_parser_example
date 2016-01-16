@@ -67,9 +67,13 @@ public class Main2 extends ActionBarActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
+		Intent intent = getIntent();
 
+		GETNOTICE = intent.getExtras().getString("url");
 
-        BBSList = (ListView)findViewById(R.id.listView); //리스트선언
+		
+
+        BBSList = (ListView)findViewById(R.id.listView1); //리스트선언
         BBSAdapter = new BBSListAdapter(this);
         BBSList.setAdapter(BBSAdapter); //리스트에 어댑터를 먹여준다.
         BBSList.setOnItemClickListener( //리스트 클릭시 실행될 로직 선언
@@ -79,7 +83,7 @@ public class Main2 extends ActionBarActivity {
 				public void onItemClick(AdapterView<?> parent, View v, int position, long id) {
 
 					ListData mData = mListData.get(position); // 클릭한 포지션의 데이터를 가져온다.
-					String URL_BCS = mData.mUrl; //가져온 데이터 중 url 부분만 적출해낸다.
+					String URL_BCS = mData.mDown; //가져온 데이터 중 url 부분만 적출해낸다.
 
 					startActivity(new Intent(Intent.ACTION_VIEW, Uri.parse(URL_PRIMARY + URL_BCS))); //적출해낸 url 을 이용해 URL_PRIMARY 와 붙이고
 
