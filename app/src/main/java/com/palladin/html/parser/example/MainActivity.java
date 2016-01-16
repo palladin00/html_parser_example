@@ -48,7 +48,6 @@ public class MainActivity extends ActionBarActivity {
     private BBSListAdapter BBSAdapter = null;
     private ListView BBSList;
     private int BBSlocate;
-
     private ConnectivityManager cManager;
     private NetworkInfo mobile;
     private NetworkInfo wifi;
