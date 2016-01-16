@@ -80,7 +80,7 @@ public class MainActivity extends ActionBarActivity {
                         ListData mData = mListData.get(position); // 클릭한 포지션의 데이터를 가져온다.
                         String URL_BCS = mData.mUrl; //가져온 데이터 중 url 부분만 적출해낸다.
 						Intent inten2t = new Intent(MainActivity.this,Main2.class);
-						inten2t.putExtra("url", URL_BCS);
+						inten2t.putExtra("url", URL_BCS.toString());
 						startActivity(inten2t); 
 						
                         

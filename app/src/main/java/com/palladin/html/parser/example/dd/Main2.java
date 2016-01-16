@@ -46,7 +46,7 @@ public class Main2 extends ActionBarActivity {
    
     private Source source1;
     private ProgressDialog progressDialog1;
-    private BBSListAdapter BBSAdapter1 = null;
+    private BBSListAdapter BBSAdapter1;
     private ListView BBSList1;
     private int BBSlocate1;
 
@@ -72,7 +72,7 @@ public class Main2 extends ActionBarActivity {
         setContentView(R.layout.activity_main);
 		Intent intent = getIntent();
 		GETNOTICE1 =intent.getExtras().getString("url").toString();
-		if(GETNOTICE1==null){
+		if(BBSAdapter1==null){
 			Toast.makeText(this, "단합니다.", Toast.LENGTH_SHORT);
 			finish();
 		}
@@ -221,7 +221,7 @@ Element BCS_date = (Element) BBS_DIV.getAllElements(HTMLElementName.DD).get(2); 
 
 
     public class BBSListAdapter extends BaseAdapter {
-        private Context mContext = null;
+        private Context mContext;
 
         public BBSListAdapter(Context mContext) {
             this.mContext = mContext;
