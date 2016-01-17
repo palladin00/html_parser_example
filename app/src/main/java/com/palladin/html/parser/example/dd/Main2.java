@@ -68,7 +68,7 @@ public class Main2 extends ActionBarActivity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.main);
+        setContentView(R.layout.massin);
  Intent intent22 = new Intent();
         GETNOTICE=getIntent().getStringExtra("url");
         title = (TextView)findViewById(R.id.item_title1); //리스트선언

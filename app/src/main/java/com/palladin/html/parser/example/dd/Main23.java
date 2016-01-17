@@ -1,4 +1,4 @@
-package com.palladin.html.parser.example;
+package com.palladin.html.parser.example.dd;
 
 import android.app.ProgressDialog;
 import android.content.Context;
@@ -20,7 +20,7 @@ import android.widget.ListView;
 import android.widget.TextView;
 import android.widget.Toast;
 
-import com.palladin.html.parser.example.dd.Main2;
+import com.palladin.html.parser.example.R;
 
 import net.htmlparser.jericho.Element;
 import net.htmlparser.jericho.HTMLElementName;
@@ -34,7 +34,7 @@ import java.net.URL;
 import java.util.ArrayList;
 import java.util.List;
 
-public class MainActivity extends ActionBarActivity {
+public class Main23 extends ActionBarActivity {
 
 
 
@@ -79,7 +79,7 @@ public class MainActivity extends ActionBarActivity {
 
                         ListData mData = mListData.get(position); // 클릭한 포지션의 데이터를 가져온다.
                         String URL_BCS = mData.mUrl; //가져온 데이터 중 url 부분만 적출해낸다.
-						Intent inten2t = new Intent(MainActivity.this,Main2.class);
+						Intent inten2t = new Intent(Main23.this,Main2.class);
 						inten2t.putExtra("url", URL_BCS);
 						startActivity(inten2t);
 						
@@ -89,7 +89,7 @@ public class MainActivity extends ActionBarActivity {
 
 		url=URL_PRIMARY+GETNOTICE;
     if(isInternetCon()) { //false 반환시 if 문안의 로직 실행
-            Toast.makeText(MainActivity.this, "인터넷에 연결되지않아 불러오기를 중단합니다.", Toast.LENGTH_SHORT).show();
+            Toast.makeText(Main23.this, "인터넷에 연결되지않아 불러오기를 중단합니다.", Toast.LENGTH_SHORT).show();
             finish();
         }else{ //인터넷 체크 통과시 실행할 로직
             try {
@@ -119,7 +119,7 @@ public class MainActivity extends ActionBarActivity {
                 Progress.postDelayed(new Runnable() {
                     @Override
                     public void run() {
-                        progressDialog = ProgressDialog.show(MainActivity.this, "", "게시판 정보를 가져오는중 입니다.");
+                        progressDialog = ProgressDialog.show(Main23.this, "", "게시판 정보를 가져오는중 입니다.");
                     }
                 }, 0);
 
