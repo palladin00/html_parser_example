@@ -2,9 +2,8 @@
 <project version="4">
   <component name="ProjectModuleManager">
     <modules>
-      <module fileurl="file://$PROJECT_DIR$/DBHSParser.iml" filepath="$PROJECT_DIR$/DBHSParser.iml" />
       <module fileurl="file://$PROJECT_DIR$/app/app.iml" filepath="$PROJECT_DIR$/app/app.iml" />
+      <module fileurl="file://$PROJECT_DIR$/html_parser_example.iml" filepath="$PROJECT_DIR$/html_parser_example.iml" />
     </modules>
   </component>
 </project>
-

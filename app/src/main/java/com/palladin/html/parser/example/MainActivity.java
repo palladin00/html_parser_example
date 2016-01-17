@@ -5,7 +5,6 @@ import android.content.Context;
 import android.content.Intent;
 import android.net.ConnectivityManager;
 import android.net.NetworkInfo;
-import android.net.Uri;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.Looper;
@@ -21,6 +20,8 @@ import android.widget.ListView;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.palladin.html.parser.example.dd.Main2;
+
 import net.htmlparser.jericho.Element;
 import net.htmlparser.jericho.HTMLElementName;
 import net.htmlparser.jericho.Source;
@@ -32,7 +33,6 @@ import java.io.InputStreamReader;
 import java.net.URL;
 import java.util.ArrayList;
 import java.util.List;
-import com.palladin.html.parser.example.dd.*;
 
 public class MainActivity extends ActionBarActivity {
 
@@ -65,7 +65,7 @@ public class MainActivity extends ActionBarActivity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_main);
+        setContentView(R.layout.activity_mainaa);
 
 
         BBSList = (ListView)findViewById(R.id.listView); //리스트선언
@@ -80,8 +80,8 @@ public class MainActivity extends ActionBarActivity {
                         ListData mData = mListData.get(position); // 클릭한 포지션의 데이터를 가져온다.
                         String URL_BCS = mData.mUrl; //가져온 데이터 중 url 부분만 적출해낸다.
 						Intent inten2t = new Intent(MainActivity.this,Main2.class);
-						inten2t.putExtra("url", URL_BCS.toString());
-						startActivity(inten2t); 
+						inten2t.putExtra("url", URL_BCS);
+						startActivity(inten2t);
 						
                         
                     }
