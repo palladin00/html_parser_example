@@ -32,78 +32,57 @@ import java.io.InputStreamReader;
 import java.net.URL;
 import java.util.ArrayList;
 import java.util.List;
+import android.widget.*;
 import com.palladin.html.parser.example.*;
 
 public class Main2 extends ActionBarActivity {
 
-	
 
 
-    private static String URL_PRIMARY1 = "http://wabu.ms.kr"; //홈페이지 원본 주소이다.
-    private static String GETNOTICE1 = null;
-	private String url1;
-    private URL URL1;
-   
-    private Source source1;
-    private ProgressDialog progressDialog1;
-    private BBSListAdapter BBSAdapter1;
-    private ListView BBSList1;
-    private int BBSlocate1;
+    private static String URL_PRIMARY = "http://gaon.caems.kr"; //홈페이지 원본 주소이다.
+    private static String GETNOTICE = "/boardCnts/list.do?boardID=211141&m=1001"; //홈페이지 의 게시판을 나타내는 뒤 주소, 비슷한 게시판들은 거의 파싱이 가능하므로 응용하여 사용하자.
+    private String url;
+    private URL URL;
 
-    private ConnectivityManager cManager1;
+    private Source source;
+    private ProgressDialog progressDialog;
+    ;
+    
+    private int BBSlocate;
+
+    private ConnectivityManager cManager;
     private NetworkInfo mobile;
     private NetworkInfo wifi;
-	
-	
-	
-    ArrayList<ListData> mListData1 = new ArrayList<>();
+
+	private String BCS_down;
+
+    
 
 
     @Override
     protected void onStop() { //멈추었을때 다이어로그를 제거해주는 메서드
         super.onStop();
-        if ( progressDialog1 != null)
-            progressDialog1.dismiss(); //다이어로그가 켜져있을경우 (!null) 종료시켜준다
+        if ( progressDialog != null)
+            progressDialog.dismiss(); //다이어로그가 켜져있을경우 (!null) 종료시켜준다
     }
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_main);
-		Intent intent = getIntent();
-		GETNOTICE1 =intent.getExtras().getString("url").toString();
-		if(BBSAdapter1==null){
-			Toast.makeText(this, "단합니다.", Toast.LENGTH_SHORT);
-			finish();
-		}
-		
-        BBSList1 = (ListView)findViewById(R.id.listView1); //리스트선언
-        BBSAdapter1 = new BBSListAdapter(this);
-        BBSList1.setAdapter(BBSAdapter1); //리스트에 어댑터를 먹여준다.
-        BBSList1.setOnItemClickListener( //리스트 클릭시 실행될 로직 선언
-			new AdapterView.OnItemClickListener() {
-
-				@Override
-				public void onItemClick(AdapterView<?> parent, View v, int position, long id) {
-
-					ListData mData1 = mListData1.get(position); // 클릭한 포지션의 데이터를 가져온다.
-					String URL_BCS = mData1.mDown; //가져온 데이터 중 url 부분만 적출해낸다.
-
-					startActivity(new Intent(Intent.ACTION_VIEW, Uri.parse(URL_PRIMARY1 + URL_BCS))); //적출해낸 url 을 이용해 URL_PRIMARY 와 붙이고
-
-				}
-			});
+        setContentView(R.layout.main);
 
 
-        url1 = URL_PRIMARY1 + GETNOTICE1; //파싱하기전 PRIMARY URL 과 공지사항 URL 을 합쳐 완전한 URL 을만든다.
+        
+
+        url = URL_PRIMARY + GETNOTICE; //파싱하기전 PRIMARY URL 과 공지사항 URL 을 합쳐 완전한 URL 을만든다.
 
         if(isInternetCon()) { //false 반환시 if 문안의 로직 실행
-            Toast.makeText(this, "인터넷에 연결되지않아 불러오기를 중단합니다.", Toast.LENGTH_SHORT).show();
+            Toast.makeText(Main2.this, "인터넷에 연결되지않아 불러오기를 중단합니다.", Toast.LENGTH_SHORT).show();
             finish();
         }else{ //인터넷 체크 통과시 실행할 로직
             try {
                 process(); //네트워크 관련은 따로 쓰레드를 생성해야 UI 쓰레드와 겹치지 않는다. 그러므로 Thread 가 선언된 process 메서드를 호출한다.
-                BBSAdapter1.notifyDataSetChanged();
+                
             } catch (Exception e) {
                 Log.d("ERROR", e + "");
 
@@ -115,7 +94,29 @@ public class Main2 extends ActionBarActivity {
 
 
     }
+	
+	public void onClick(View v){
 
+		if(v.getId() == R.id.card_view1){
+
+		
+
+		}
+		else if(v.getId()== R.id.card_view2){
+
+		
+		}
+		else if(v.getId()== R.id.card_view3){
+
+	
+		 // 클릭한 포지션의 데이터를 가져온다.
+		String URL_BCS = null; //가져온 데이터 중 url 부분만 적출해낸다.
+
+		startActivity(new Intent(Intent.ACTION_VIEW, Uri.parse(URL_PRIMARY + BCS_down))); //적출해낸 url 을 이용해 URL_PRIMARY 와 붙이고
+
+	}}
+	
+	
 
     private void process() throws IOException {
 
@@ -126,68 +127,83 @@ public class Main2 extends ActionBarActivity {
 
                 Handler Progress = new Handler(Looper.getMainLooper()); //네트워크 쓰레드와 별개로 따로 핸들러를 이용하여 쓰레드를 생성한다.
                 Progress.postDelayed(new Runnable() {
-						@Override
-						public void run() {
-							progressDialog1 = ProgressDialog.show(Main2.this, "", "게시판 정보를 가져오는중 입니다.");
-						}
-					}, 0);
+                    @Override
+                    public void run() {
+                        progressDialog = ProgressDialog.show(Main2.this, "", "게시판 정보를 가져오는중 입니다.");
+                    }
+                }, 0);
 
                 try {
-                    URL1 = new URL(url1);
-                    InputStream html = URL1.openStream();
-                    source1 = new Source(new InputStreamReader(html, "euc-kr")); //소스를 UTF-8 인코딩으로 불러온다.
-                    source1.fullSequentialParse(); //순차적으로 구문분석
+                    URL = new URL(url);
+                    InputStream html = URL.openStream();
+                    source = new Source(new InputStreamReader(html, "utf-8")); //소스를 UTF-8 인코딩으로 불러온다.
+                    source.fullSequentialParse(); //순차적으로 구문분석
                 } catch (Exception e) {
                     Log.d("ERROR", e + "");
                 }
 
-                List<StartTag> tabletags = source1.getAllStartTags(HTMLElementName.DIV); // DIV 타입의 모든 태그들을 불러온다.
+                List<StartTag> tabletags = source.getAllStartTags(HTMLElementName.TABLE); // DIV 타입의 모든 태그들을 불러온다.
 
                 for(int arrnum = 0;arrnum < tabletags.size(); arrnum++){ //DIV 모든 태그중 bbsContent 태그가 몇번째임을 구한다.
 
 
-					if(tabletags.get(arrnum).toString().equals("<div class=\"boardRead\">")) {
-						BBSlocate1 = arrnum; //DIV 클래스가 bbsContent 면 arrnum 값을 BBSlocate 로 몇번째인지 저장한다.
-						Log.d("BBSLOCATES", arrnum+""); //arrnum 로깅
-						break;
-					}
+					if(tabletags.get(arrnum).toString().equals("<div class=\"infoArea\">")) {
+                     BBSlocate = arrnum; //DIV 클래스가 bbsContent 면 arrnum 값을 BBSlocate 로 몇번째인지 저장한다.
+                     Log.d("BBSLOCATES", arrnum+""); //arrnum 로깅
+                     break;
+                 }
                 }
 
 
 
-                Element BBS_DIV = (Element) source1.getAllElements(HTMLElementName.DIV).get(BBSlocate1); //BBSlocate 번째 의 DIV 를 모두 가져온다.
-                Element BCS_title = (Element) BBS_DIV.getAllElements(HTMLElementName.DD).get(0); //DD 접속
-Element BCS_writer1= (Element) BBS_DIV.getAllElements(HTMLElementName.DD).get(1); //DD 접속
-Element BCS_date = (Element) BBS_DIV.getAllElements(HTMLElementName.DD).get(2); //DD 접속
-				Element BBS_TBODY = (Element) BBS_DIV.getAllElements(HTMLElementName.DIV).get(4);
-                Element BBS_TBODY2 = (Element) BBS_DIV.getAllElements(HTMLElementName.DIV).get(5); 
-				Element BBS_Down = (Element) BBS_DIV.getAllElements(HTMLElementName.TD).get(1); 
-				Element BC_a = (Element) BBS_DIV.getAllElements(HTMLElementName.A).get(0); 
-				String BCS_down = BC_a.getAttributeValue("href");
-				String BCS_abc = BBS_TBODY.toString()+BBS_TBODY2.toString();
-				String BCS_title1 = BCS_title.toString();
-				String BCS_writer = BCS_writer1.toString();
-				String BCS_date1 = BCS_date.toString();
-				String BCS_url1 = null;
-                          final String BCS_type = null;
+                Element BBS_DIV = (Element) source.getAllElements(HTMLElementName.DIV).get(BBSlocate); //BBSlocate 번째 의 DIV 를 모두 가져온다.
+                Element BBS_TABLE = (Element) BBS_DIV.getAllElements(HTMLElementName.DIV).get(0); //테이블 접속
+                Element BBS_TBODY = (Element) BBS_TABLE.getAllElements(HTMLElementName.DIV).get(0); //데이터가 있는 TBODY 에 접속
 
-				final String BCS_url= null;
-                        mListData1.add(new ListData(BCS_title1, BCS_writer, BCS_date1, BCS_abc, BCS_down)); //데이터가 모이면 데이터 리스트 클래스에 데이터들을 등록한다.
-                        Log.d("BCSARR","타입:"+BCS_type+"\n제목:" +BCS_title +"\n주소:"+BCS_url +"\n글쓴이:" + BCS_writer + "\n날짜:" + BCS_date+"\n내용:"+BBS_TBODY+BBS_TBODY2);
 
-                    
+                for(int C_TR = 0; C_TR < BBS_TBODY.getAllElements(HTMLElementName.TR).size();C_TR++){ //여기서는 이제부터 게시된 게시물 데이터를 불러와 게시판 인터페이스를 구성할 것이다.
+
+
+                    // 소스의 효율성을 위해서는 for 문을 사용하는것이 좋지만 , 이해를 돕기위해 소스를 일부로 늘려 두었다.
+
+                    try {
+                        Element BBS_TR = (Element) BBS_TBODY.getAllElements(HTMLElementName.DIV).get(C_TR); //TR 접속
+						Element BC_title = (Element) BBS_TR.getAllElements(HTMLElementName.DD).get(0);
+                        Element BC_TYPE = (Element) BBS_TR.getAllElements(HTMLElementName.DD).get(0); //타입 을 불러온다.
+
+                        Element BC_info = (Element) BBS_TR.getAllElements(HTMLElementName.TD).get(1); //URL(herf) TITLE(title) 을 담은 정보를 불러온다.
+                        Element BC_a = (Element) BC_info.getAllElements(HTMLElementName.A).get(0); //BC_info 안의 a 태그를 가져온다.
+                        String BCS_down = BC_a.getAttributeValue("href"); //a 태그의 herf 는 BCS_url 로 선언
+                        String BCS_title = BC_title.toString(); //a 태그의 title 은 BCS_title 로 선언
+
+                        Element BC_writer = (Element) BBS_TR.getAllElements(HTMLElementName.DD).get(1); //글쓴이를 불러온다.
+                        Element BC_date = (Element) BBS_TR.getAllElements(HTMLElementName.TD).get(2); // 날짜를 불러온다.
+
+                        String BCS_type = BC_TYPE.getContent().toString(); // 타입값을 담은 엘레먼트의 컨텐츠를 문자열로 변환시켜 가져온다.
+                        String BCS_writer = BC_writer.getContent().toString(); // 작성자값을 담은 엘레먼트의 컨텐츠를 문자열로 변환시켜 가져온다.
+                        String BCS_date = BC_date.getContent().toString(); // 작성일자값을 담은 엘레먼트의 컨텐츠를 문자열로 변환시켜 가져온다.
+
+
+                        Log.d("BCSARR","타입:"+BCS_type+"\n제목:" +BCS_title +"\n주소:"+BCS_down +"\n글쓴이:" + BCS_writer + "\n날짜:" + BCS_date);
+
+
+
+                    }catch(Exception e){
+                       Log.d("BCSERROR",e+"");
+                    }
+                    }
                 Handler mHandler = new Handler(Looper.getMainLooper());
                 mHandler.postDelayed(new Runnable() {
-						@Override
-						public void run() {
-							BBSAdapter1.notifyDataSetChanged(); //모든 작업이 끝나면 리스트 갱신
-							progressDialog1.dismiss(); //모든 작업이 끝나면 다이어로그 종료
-						}
-					}, 0);
+                    @Override
+                    public void run() {
+                       //모든 작업이 끝나면 리스트 갱신
+                        progressDialog.dismiss(); //모든 작업이 끝나면 다이어로그 종료
+                    }
+                }, 0);
 
 
 
-			}
+           }
 
         }.start();
 
@@ -198,112 +214,13 @@ Element BCS_date = (Element) BBS_DIV.getAllElements(HTMLElementName.DD).get(2); 
 
 
     private boolean isInternetCon() {
-        cManager1=(ConnectivityManager)getSystemService(CONNECTIVITY_SERVICE);
-        mobile = cManager1.getNetworkInfo(ConnectivityManager.TYPE_MOBILE); //모바일 데이터 여부
-        wifi = cManager1.getNetworkInfo(ConnectivityManager.TYPE_WIFI); //와이파이 여부
+        cManager=(ConnectivityManager)getSystemService(CONNECTIVITY_SERVICE);
+        mobile = cManager.getNetworkInfo(ConnectivityManager.TYPE_MOBILE); //모바일 데이터 여부
+        wifi = cManager.getNetworkInfo(ConnectivityManager.TYPE_WIFI); //와이파이 여부
         return !mobile.isConnected() && !wifi.isConnected(); //결과값을 리턴
-    }
+    }}
 
 
 
 
-    // <리스트 적용부분
-    class ViewHolder {
-
-        public TextView mTitle1;
-        public TextView mWriter1;
-        public TextView mDate1;
-	public TextView mDown;
-
-        public TextView mabc;
-    }
-
-
-
-    public class BBSListAdapter extends BaseAdapter {
-        private Context mContext;
-
-        public BBSListAdapter(Context mContext) {
-            this.mContext = mContext;
-        }
-
-
-        @Override
-        public int getCount() {
-            return mListData1.size();
-        }
-
-        @Override
-        public Object getItem(int position) {
-            return mListData1.get(position);
-        }
-
-        @Override
-        public long getItemId(int position) {
-            return position;
-        }
-
-        @Override
-        public View getView(int position, View convertView, ViewGroup parent) {
-			ViewHolder holder;
-
-            if (convertView == null) {
-                holder = new ViewHolder();
-
-                LayoutInflater inflater = (LayoutInflater) mContext.getSystemService(Context.LAYOUT_INFLATER_SERVICE);
-                convertView = inflater.inflate(R.layout.itemstyle2, null);
-
-                holder.mTitle1 = (TextView) convertView.findViewById(R.id.item_title1);
-                holder.mWriter1 = (TextView) convertView.findViewById(R.id.item_writer1);
-                holder.mDate1 = (TextView) convertView.findViewById(R.id.item_date1);
-holder.mabc = (TextView) convertView.findViewById(R.id.item_abc);
-holder.mDown = (TextView) convertView.findViewById(R.id.item_down);
-                convertView.setTag(holder);
-
-            } else {
-                holder = (ViewHolder) convertView.getTag();
-            }
-
-            ListData mData = mListData1.get(position);
-
-            
-                holder.mTitle1.setText(mData.mTitle1);
-            
-
-            holder.mWriter1.setText(mData.mWriter1+" 선생님"); //선생님을 붙힘
-            holder.mDate1.setText(mData.mDate1);
-            return convertView;
-
-        }
-
-
-    }
-
-    public class ListData { // 데이터를 받는 클래스
-
-        public String mTitle1;
-        public String mWriter1;
-        public String mDate1;
-        public String mabc;
-        public String mDown;
-
-
-        public ListData()  {
-
-
-        }
-
-        public ListData(String mTitle1,String mWriter1,String mDate1, String mabc,String mDown)  { //데이터를 받는 클래스 메서드
-     
-            this.mTitle1 = mTitle1;
-            
-            this.mWriter1 = mWriter1;
-            this.mDate1 = mDate1;
-            this.mabc = mabc;
-            this.mDown = mDown;
-        }
-
-    }
-    // 리스트 적용부분 >
-}
-
+   
